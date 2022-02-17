@@ -1,0 +1,39 @@
+server:
+  port: 0  #랜덤포트
+# user-service2 포트변경 : Run Configuration메누 user-service복사해서 2로 만들고 VM argument에 -Dserver.port=9002
+
+
+spring:
+  application:
+    name: user-service
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+      path: /h2-console
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+    generate-unique-name: false
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.insatnace.id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone : http://127.0.0.1:8761/eureka
+      
+#커스텀 메시지
+greeting:
+  message: welcome
+  
