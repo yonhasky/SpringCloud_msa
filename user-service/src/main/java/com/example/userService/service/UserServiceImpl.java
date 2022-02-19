@@ -1,16 +1,20 @@
 package com.example.userService.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.userService.dto.UserDto;
 import com.example.userService.jpa.UserEntity;
 import com.example.userService.jpa.UserRepository;
+import com.example.userService.vo.ResponseOrder;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,6 +42,26 @@ public class UserServiceImpl implements UserService {
 		UserDto returnUserDto = mapper.map(userEntity, UserDto.class);
 
 		return returnUserDto;
+	}
+
+	@Override
+	public UserDto getUserByUserId(String userId) {
+		UserEntity userEntity = userRepository.findByUserId(userId);	//findByUserId > UserRepository에 생성
+
+		if (userEntity == null) {
+			throw new UsernameNotFoundException("User Not Found");
+		}
+		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+		List<ResponseOrder> orders = new ArrayList<>();
+		userDto.setOrders(orders);
+
+		return userDto;
+	}
+
+	@Override
+	public Iterable<UserEntity> getUserByAll() {
+		return userRepository.findAll();
 	}
 
 }
