@@ -12,27 +12,51 @@ spring:  application:    name: apigateway-service
         args:          baseMessage: Spring Cloud Gateway Global Filter
           preLogger: true
           postLogger: true      routes: 
+#      - id: user-service
+#        uri: lb://USER-SERVICE #eureka naming
+#        #조건
+#        predicates:
+#        - Path=/user-service/**
+        
       - id: user-service
         uri: lb://USER-SERVICE #eureka naming
-        #조건
-        predicates:
+        predicates:   #조건
+        - Path=/user-service/login
+        - Method=POST
+        filters:        - RemoveRequestHeader=Cookie
+        - RewritePath=/user-service/(?<segment>.*), /$\{segment}    #/user-service 를 제외하기
+        
+      - id: user-service
+        uri: lb://USER-SERVICE #eureka naming
+        predicates:   #조건
+        - Path=/user-service/users
+        - Method=POST
+        filters:
+        - RemoveRequestHeader=Cookie
+        - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        
+      - id: user-service
+        uri: lb://USER-SERVICE #eureka naming
+        predicates:   #조건
         - Path=/user-service/**
+        - Method=GET
+        filters:
+        - RemoveRequestHeader=Cookie
+        - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - AuthorizationHeaderFilter #GET으로 들어오는 건에 대한 검증필터 추가 회원가입,로그인은 검증 노필요
         
       - id: catalog-service
         uri: lb://CATALOG-SERVICE #eureka naming
-        #조건
-        predicates:
+        predicates:   #조건
         - Path=/catalog-service/**
               - id: order-service
         uri: lb://ORDER-SERVICE #eureka naming
-        #조건
-        predicates:
+        predicates:   #조건
         - Path=/order-service/**
         
       - id: first-service
         uri: lb://MY-FIRST-SERVICE #eureka naming #http://localhost:8091/
-        #조건
-        predicates:        - Path=/first-service/**
+        predicates:   #조건        - Path=/first-service/**
         filters:#        - AddRequestHeader=first-request, first-request-header2
 #        - AddRequestHeader=first-response, first-response-header2
         - CustomFilter     
@@ -49,6 +73,7 @@ spring:  application:    name: apigateway-service
             preLogger: true
             postLogger: true
         
-        
+token:
+  secret: user_token
         
         
