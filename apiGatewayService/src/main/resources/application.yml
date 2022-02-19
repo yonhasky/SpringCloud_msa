@@ -54,6 +54,10 @@ spring:  application:    name: apigateway-service
         predicates:   #조건
         - Path=/order-service/**
         
+        
+        
+        
+        
       - id: first-service
         uri: lb://MY-FIRST-SERVICE #eureka naming #http://localhost:8091/
         predicates:   #조건        - Path=/first-service/**
