@@ -6,6 +6,11 @@ eureka:  client:    register-with-eureka: true
     service-url:      defaultZone: http://localhost:8761/eureka
       
 spring:  application:    name: apigateway-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
     
   cloud:    gateway:
       default-filters:      - name: GlobalFilter 
@@ -45,6 +50,16 @@ spring:  application:    name: apigateway-service
         - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - AuthorizationHeaderFilter #GET으로 들어오는 건에 대한 검증필터 추가 회원가입,로그인은 검증 노필요
         
+      - id: user-service
+        uri: lb://USER-SERVICE #eureka naming
+        predicates:   #조건
+        - Path=/user-service/actuator/**      #actuator 설정
+        - Method=GET,POST
+        filters:
+        - RemoveRequestHeader=Cookie
+        - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+          
+        
       - id: catalog-service
         uri: lb://CATALOG-SERVICE #eureka naming
         predicates:   #조건
@@ -76,6 +91,9 @@ spring:  application:    name: apigateway-service
           args:            baseMessage: logging
             preLogger: true
             postLogger: true
+
+#actuator 설정
+management:  endpoints:    web:      exposure:        include: refresh, health, beans, httptrace, busrefresh
         
 token:
   secret: user_token

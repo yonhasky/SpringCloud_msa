@@ -1,0 +1,9 @@
+#우선순위 bootstrap > application
+
+spring:
+  cloud:
+    config:
+      uri: http://127.0.0.1:8888  #config서버
+      name: ecommerce #레파지토리 파일명
+  profiles:
+    active: dev
