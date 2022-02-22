@@ -6,6 +6,11 @@ server:
 spring:
   application:
     name: user-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   h2:
     console:
       enabled: true
@@ -36,8 +41,16 @@ eureka:
 #커스텀 메시지
 greeting:
   message: welcome
+
+#actuator 설정(재기동 없이 config파일 가져옴)
+# ~/actuator/health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, busrefresh
   
-token:
-  expiration_time: 86400000 #하루시간
-  secret: user_token
-  
+#SpringConfig로부터 가져오는 것으로 변경
+#token:
+#  expiration_time: 86400000 #하루시간
+#  secret: user_token
