@@ -2,7 +2,7 @@
 
 #### _SpringCloud MicroServiceArchitecture project_
 
-## [Tech-stack]
+### [Tech-stack]
 - SpringBoot 2.6.3
 - jdk11
 - maven
@@ -20,7 +20,7 @@
 - Kafka2.13-2.7.0
 - MariaDB 10.6
 
-## [Command]
+### [Command]
 
 web : http://localhost:15672
 user: guest/guest
@@ -29,7 +29,7 @@ user: guest/guest
 ```sh
 mvn spring-boot:run
 ```
-## [user-service]
+### [user-service]
 > 유저 서비스
 - SpringSecurity
 - login > JWT
@@ -97,10 +97,12 @@ $KAFKA_HOME/bin/kafka-topic.sh --create --topic quickstart-events --bootstrap-se
 2. Topic 목록 확인
 ```sh
 $KAFKA_HOME/bin/kafka-topic.sh --bootstrap-server localhost:9092 --list
+win : .\bin\windows\kafka-topic.bat --bootstrap-server localhost:9092 --list
 ```
 3. Topic 정보 확인
 ```sh
 $KAFKA_HOME/bin/kafka-topic.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
+win: .\bin\windows\kafka-topics.bat --describe --topic my_topic_users --bootstrap-server localhost:9092
 ```
 4. 메시지 생산
 ```sh
@@ -117,9 +119,96 @@ $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --to
 - Kafka broker Cluster : 3대 이상 broker cluster 구성
 - Zookeeper 연동: 
 
+## [Kafka Connect]
+> Kafka Connect 설치
+```
+curl -O http://packages.confluent.io/archive/6.1/confluent-community-6.1.0.tar.gz
+tar xvf confluent-community-6.1.0.tar.gz
+cd  $KAFKA_CONNECT_HOME
+```
+
+> Kafka Connect 실행
+```
+./bin/connect-distributed ./etc/kafka/connect-distributed.properties
+win: .\bin\windows\connect-distributed.bat .\etc\kafka\connect-distributed.properties
+```
+
+> JDBC Connector 설치
+```
+- https://docs.confluent.io/5.5.1/connect/kafka-connect-jdbc/index.html
+- confluentinc-kafka-connect-jdbc-10.3.3.zip 
+```
+
+> etc/kafka/connect-distributed.properties 파일 마지막에 아래 plugin 정보 추가
+- plugin.path=[confluentinc-kafka-connect-jdbc-10.0.1 폴더]
+
+> JdbcSourceConnector에서 MariaDB 사용하기 위해 mariadb 드라이버 복사
+- ./share/java/kafka/ 폴더에 mariadb-java-client-2.7.2.jar  파일 복사
+
+> Kafka Source Connect 추가(postman으로 가능)
+```
+echo '
+
+{
+  "name" : "my-source-connect",
+  "config" : {
+  "connector.class" : "io.confluent.connect.jdbc.JdbcSourceConnector",
+  "connection.url":"jdbc:mysql://localhost:3306/mydb",
+  "connection.user":"root",
+  "connection.password":"test1357",
+  "mode": "incrementing",
+  "incrementing.column.name" : "id",
+  "table.whitelist":"users",
+  "topic.prefix" : "my_topic_",
+  "tasks.max" : "1"
+  }
+}
+
+' | curl -X POST -d @- http://localhost:8083/connectors --header "content-Type:application/json"
+
+```
+
+> Kafka Sink Connect 추가(mariaDB)
+```
+echo '
+
+{
+  "name":"my-sink-connect",
+  "config":{
+  "connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector",
+  "connection.url":"jdbc:mysql://localhost:3306/mydb",
+  "connection.user":"root",
+  "connection.password":"test1357",
+  "auto.create":"true",
+  "auto.evolve":"true",
+  "delete.enabled":"false",
+  "tasks.max":"1",
+  "topics":"my_topic_users"
+  }
+}
+
+'| curl -X POST -d @- http://localhost:8083/connectors --header "content-Type:application/json"
+```
+
 ## [MariaDB]
 > MariaDB 설치
 ```
 https://mariadb.org
 ```
 - MariaDB 10.6
+> H2-console
+```
+- Saved Settings : Generic MySQL
+- Driver Class: org.mariadb.jdbc.Driver
+- JDBC URL: jdbc:mysql://localhost:3306/test
+- ID: root
+- PW: test
+```
+- 데이터베이스 생성
+```
+create database mydb;
+```
+- 데이터베이스 등록
+```
+use mydb;
+```
