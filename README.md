@@ -78,15 +78,23 @@ tar xvf Kafka_2.13-2.7.0.tgz
 
 - bin 경로 : window 사용자 > bin/windows/..
 
-- Zookeeper 구동
+> Zookeeper 구동
+- linux
 ```sh
 $KAFKA_HOME/bin/zookeeper-server-start.sh $KAFKA_HOME/config/zookeeper.properties
-win : $KAFKA_HOME > .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
 ```
-- Kafka 구동
+- windows
+```
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+```
+> Kafka 구동
+- linux
 ```sh
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
-win : $KAFKA_HOME > .\bin\windows\kafka-server-start.bat .\config\server.properties
+```
+- windows
+```
+.\bin\windows\kafka-server-start.bat .\config\server.properties
 ```
 
 > quickstart-events 토픽 테스트
