@@ -25,7 +25,6 @@ public class OrderServiceImpl implements OrderService {
 		this.orderRepository = orderRepository;
 	}
 
-	// 유저 등록
 	@Override
 	public OrderDto createOrder(OrderDto orderDto) {
 		orderDto.setOrderId(UUID.randomUUID().toString());
