@@ -1,0 +1,32 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+  profiles:
+    active: native    #파일시스템에서 가져오기(깃설정은 무시됨)
+    
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: file:///C:\\workspace_sts\\git-local-repo   #파일시스템경로
+        git:
+          #uri: file:///C:\\workspace_sts\\git-local-repo  #깃 레포지토리파일 경로
+          uri: https://github.com/yonhasky/SpringCloud-config.git #깃연동
+          #username:
+          #password:
+
+##yml접속 경로 : http://localhost:8888/ecommerce/default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh

@@ -1,0 +1,7 @@
+#config서버/encrypt 
+encrypt:
+#  key: abcdefghijklmnopqrstuvwxyz0123456789 #대칭키
+  key-store:#    location: file:///${user.home}/C:\workspace_sts\keystore
+    location: file:///C:/workspace_sts/keystore/apiEncryptionKey.jks
+    password: test1234
+    alias: apiEncryptionKey
