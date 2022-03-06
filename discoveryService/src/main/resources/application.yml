@@ -1,6 +1,7 @@
 server:
   port: 8761
-  
+
+#유레카서비스는 터미널로 실행하는게 좋음 >해당위치에서  mvn spring-boot:run  
 spring:  application:    name: discoveryservice
     
 eureka:  client:    register-with-eureka: false
