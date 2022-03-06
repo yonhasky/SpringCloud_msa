@@ -160,16 +160,16 @@ echo '
 {
   "name" : "my-source-connect",
   "config" : {
-  "connector.class" : "io.confluent.connect.jdbc.JdbcSourceConnector",
-  "connection.url":"jdbc:mysql://localhost:3306/mydb",
-  "connection.user":"root",
-  "connection.password":"test1357",
-  "mode": "incrementing",
-  "incrementing.column.name" : "id",
-  "table.whitelist":"users",
-  "topic.prefix" : "my_topic_",
-  "tasks.max" : "1"
-  }
+      "connector.class" : "io.confluent.connect.jdbc.JdbcSourceConnector",
+      "connection.url":"jdbc:mysql://localhost:3306/mydb",
+      "connection.user":"root",
+      "connection.password":"test1357",
+      "mode": "incrementing",
+      "incrementing.column.name" : "id",
+      "table.whitelist":"users",
+      "topic.prefix" : "my_topic_",
+      "tasks.max" : "1"
+      }
 }
 
 ' | curl -X POST -d @- http://localhost:8083/connectors --header "content-Type:application/json"
@@ -183,16 +183,16 @@ echo '
 {
   "name":"my-sink-connect",
   "config":{
-  "connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector",
-  "connection.url":"jdbc:mysql://localhost:3306/mydb",
-  "connection.user":"root",
-  "connection.password":"test1357",
-  "auto.create":"true",
-  "auto.evolve":"true",
-  "delete.enabled":"false",
-  "tasks.max":"1",
-  "topics":"my_topic_users"
-  }
+      "connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector",
+      "connection.url":"jdbc:mysql://localhost:3306/mydb",
+      "connection.user":"root",
+      "connection.password":"test1357",
+      "auto.create":"true",
+      "auto.evolve":"true",
+      "delete.enabled":"false",
+      "tasks.max":"1",
+      "topics":"my_topic_users"
+      }
 }
 
 '| curl -X POST -d @- http://localhost:8083/connectors --header "content-Type:application/json"
