@@ -7,26 +7,41 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.example.userService.client.OrderServiceClient;
 import com.example.userService.dto.UserDto;
 import com.example.userService.jpa.UserEntity;
 import com.example.userService.jpa.UserRepository;
 import com.example.userService.vo.ResponseOrder;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 	UserRepository userRepository;
 	BCryptPasswordEncoder passwordEncoder;
 
+	Environment env;
+	RestTemplate restTemplate;
+	OrderServiceClient orderServiceClient;
+
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, Environment env,
+			RestTemplate restTemplate, OrderServiceClient orderServiceClient) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.env = env;
+		this.restTemplate = restTemplate;
+		this.orderServiceClient = orderServiceClient;
 	}
 
 	// 유저 등록
@@ -55,8 +70,27 @@ public class UserServiceImpl implements UserService {
 		}
 		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 
-		List<ResponseOrder> orders = new ArrayList<>();
-		userDto.setOrders(orders);
+//		List<ResponseOrder> orders = new ArrayList<>();
+		
+// Using as rest template
+//		String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+//		ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+//				new ParameterizedTypeReference<List<ResponseOrder>>() {
+//				});
+//
+//		List<ResponseOrder> orderList = orderListResponse.getBody();
+		
+		//feignClient 사용
+//		List<ResponseOrder> orderList = null;
+//		try {
+//			orderList = orderServiceClient.getOrders(userId);
+//		}catch(FeignException e) {
+//			log.error(e.getMessage());
+//		}
+		
+		/*ErrorDecoder 사용*/
+		List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);	
+		userDto.setOrders(orderList);
 
 		return userDto;
 	}
