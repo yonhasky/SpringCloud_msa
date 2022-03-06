@@ -94,9 +94,10 @@ spring:  application:    name: apigateway-service
 
 #actuator 설정
 management:  endpoints:    web:      exposure:        include: refresh, health, beans, httptrace, busrefresh
-        
-token:
-  secret: user_token
+       
+#config서버에서 가져옴 
+#token:
+#  secret: user_token
   
         
         
