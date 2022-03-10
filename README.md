@@ -19,6 +19,7 @@
 - erlang : erl-24.2.1(환경변수)
 - Kafka2.13-2.7.0
 - MariaDB 10.6
+- CircuitBreaker Resilience4J
 
 ### [Command]
 
@@ -33,6 +34,7 @@ mvn spring-boot:run
 > 유저 서비스
 - SpringSecurity
 - login > JWT
+- CircuitBreaker Resilience4J 적용
 
 
 ## [order-service]
